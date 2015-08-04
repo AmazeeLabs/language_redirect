@@ -2,19 +2,23 @@
 
 //AXXX
 function language_redirect_config_form($form, &$form_state) {
-  $form['description']['#markup'] = t('In all fields please use language codes that could be found in the Code column of the <a href="!url" target="_blank">language list</a>.', array(
-    '!url' => url('admin/config/regional/language'),
-  ));
+  $languages = language_list();
+  $options = array();
+  foreach($languages as $lang) {
+    $options[$lang->language] = $lang->name;
+  }
   $form['language_redirect_temporary_disabled_languages'] = array(
-    '#type' => 'textfield',
+    '#type' => 'checkboxes',
     '#title' => t('Temporary disabled languages'),
-    '#description' => t('List of languages separated by commas which should redirect to the <em>Target language</em>.'),
-    '#default_value' => variable_get('language_redirect_temporary_disabled_languages', ''),
+    '#description' => t('Select which languages should be temporary disabled for the people who do not have the <em>Access temporary disabled languages</em> permission. They will be redirected to the target language.'),
+    '#default_value' => variable_get('language_redirect_temporary_disabled_languages', array()),
+    '#options' => $options,
   );
   $form['language_redirect_target_language'] = array(
-    '#type' => 'textfield',
+    '#type' => 'select',
     '#title' => t('Target language'),
     '#default_value' => variable_get('language_redirect_target_language', ''),
+    '#options' => $options,
   );
   return system_settings_form($form);
 }

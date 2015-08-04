@@ -61,6 +61,21 @@ function language_redirect_language_switch_links_alter(array &$links, $type, $pa
 }
 
 /**
+ * Implements hook_process_HOOK().
+ */
+function language_redirect_process_domain_locale_all_languages(&$variables) {
+  // We need to alter the links which are displayed by the domain_locale module
+  // in the domain_locale_all_languages content pane.
+  $current_path = drupal_is_front_page() ? '<front>' : $_GET['q'];
+  $lang_type = LANGUAGE_TYPE_INTERFACE;
+  foreach ($variables['domains'] as $domain_key => &$values) {
+    if (!empty($values['language_links'])) {
+      language_redirect_language_switch_links_alter($values['language_links'], $lang_type, $current_path);
+    }
+  }
+}
+
+/**
  * Detects redirect case.
  *
  * @param string|null $langcode
@@ -97,5 +112,5 @@ function _language_redirect_is_redirect_case($langcode = NULL) {
  * @return array
  */
 function _language_redirect_get_temporary_disabled_languages() {
-  return array_filter(array_map('trim', explode(',', variable_get('language_redirect_temporary_disabled_languages', ''))));
+  return array_filter(variable_get('language_redirect_temporary_disabled_languages', array()));
 }

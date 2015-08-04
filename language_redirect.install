@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Install file for the language redirect module.
+ */
+
+/**
+ * Implements hook_update_N().
+ *
+ * Migrate the language_redirect_temporary_disabled_languages to an array.
+ */
+function language_redirect_update_7001() {
+  $disabled_languages = variable_get('language_redirect_temporary_disabled_languages', '');
+  if (is_string($disabled_languages)) {
+    $disabled_languages = array_filter(array_map('trim', explode(',', $disabled_languages)));
+    variable_set('language_redirect_temporary_disabled_languages', $disabled_languages);
+  }
+}

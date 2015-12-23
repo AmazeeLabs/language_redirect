@@ -101,6 +101,19 @@ function _language_redirect_is_redirect_case($langcode = NULL) {
     // Ensure that user has to be redirected.
     && !user_access('access temporary disabled languages')
   ) {
+    // Last thing to check is if we should ignore specific pages.
+    $pages_to_match = variable_get('language_redirect_ignore_paths', NULL);
+    if (!empty($pages_to_match)) {
+      // Convert the Drupal path to lowercase.
+      $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+      // Compare the lowercase internal and lowercase path alias (if any).
+      $page_match = drupal_match_path($path, $pages_to_match);
+      // Return NULL if the page does match, because it means we have to ignore
+      // the redirect.
+      if ($page_match) {
+        return NULL;
+      }
+    }
     return $languages[$target_language];
   }
   return NULL;

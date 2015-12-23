@@ -20,5 +20,11 @@ function language_redirect_config_form($form, &$form_state) {
     '#default_value' => variable_get('language_redirect_target_language', ''),
     '#options' => $options,
   );
+  $form['language_redirect_ignore_paths'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Ignore paths'),
+    '#default_value' => variable_get('language_redirect_ignore_paths', NULL),
+    '#description' => t('Input the paths which should bypass the redirect. For example: <em>user</em>, <em>user/login</em> or <em>user/*/edit</em>. Please input one path per line.'),
+  );
   return system_settings_form($form);
 }
